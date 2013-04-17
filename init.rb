@@ -18,6 +18,6 @@ Redmine::Plugin.register :redmine_task_board do
     permission :edit_taskboard, {:projects => :settings, :taskboard => [:create_column, :delete_column, :update_columns]}, :require => :member
     permission :view_taskboard, {:taskboard => [:index, :save, :archive_issues, :unarchive_issue]}, :require => :member
   end
-  menu :top_menu, :taskboard, { :controller => 'my_taskboard', :action => 'my_index' }, :caption => 'My Task Board', :before => :projects
-  menu :project_menu, :taskboard, { :controller => 'taskboard', :action => 'index' }, :caption => 'Task Board', :before => :issues, :param => :project_id
+  menu :top_menu, :taskboard, { :controller => 'my_taskboard', :action => 'my_index' }, :caption => :label_my_task_board, :before => :projects
+  menu :project_menu, :taskboard, { :controller => 'taskboard', :action => 'index' }, :caption => :label_task_board, :before => :issues, :param => :project_id
 end
