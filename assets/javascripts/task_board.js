@@ -216,7 +216,7 @@ var TaskBoardUtils = {
     });
 
     $(document).on('click', '#edit-issues', function() {
-      location.href = '/issues/bulk_edit?' + TaskBoardUtils.serializeCheckedButtons();
+      location.href = issue_edit_url + TaskBoardUtils.serializeCheckedButtons();
     });
 
     $(document).on('click', '#archive-issues', function() {
