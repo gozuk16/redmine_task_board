@@ -1,4 +1,4 @@
-# English strings go here for Rails i18n
+# Japanese strings go here for Rails i18n
 ja:
   label_task_board: "かんばん"
   label_my_task_board: "Myかんばん"
@@ -9,12 +9,12 @@ ja:
   task_board_statuses: "トラッカーのステータス"
   task_board_columns: "列"
   task_board_not_shown: "表示しない"
-  task_board_visible_columns: "列"
+  task_board_visible_columns: "表示列"
   task_board_task_limit: "制限"
   task_board_save_changes: "保存"
   task_board_issue_archived: This issue is archived from the task board view and will not display.
   task_board_issue_unarchive: Unarchive Issue
-  task_board_issue_bulk_archive: Archive Selected Issues
-  task_board_issue_bulk_edit: "選択したチケットを編集"
-  task_board_not_prioritized: Other Issues
-  task_board_prioritized: Prioritized Issues
+  task_board_issue_bulk_archive: "チケットをアーカイブ"
+  task_board_issue_bulk_edit: "チケットを編集"
+  task_board_not_prioritized: "その他のチケット"
+  task_board_prioritized: "優先チケット"
