@@ -5,11 +5,17 @@
   <input type="button" id="archive-issues" value="<%= translate :task_board_issue_bulk_archive %>" />
 </div>
 
+<div class="taskboard-leadtime">
+  ここにリードタイム書く
+</div>
+<hr />
+
 <div class="taskboard-wrapper" id="sortable-root">
   <% @columns.each do|column| %>
     <div class="taskboard-pane">
-      <h2><%= column.title %></h2>
-      <% column.issues.each do |status_id, issues| %>
+      <% issues = column.issues %>
+      <h2><%= column.title %> (<%= column.issues_count %><% if column.max_issues > 0 %>/<%= column.max_issues %><% end %>)</h2>
+      <% issues.each do |status_id, issues| %>
         <% unless column.issues.size == 1 %>
           <h3 class="status"><%= @status_names[status_id] %></h3>
         <% end %>
@@ -42,6 +48,8 @@
 </div>
 
 <script type="text/javascript">
+  //var project_save_url = '/projects/<%= @project.id %>/taskboard/save';
+  //var project_archive_url = '/projects/<%= @project.id %>/taskboard/archive-issues';
   var project_save_url = '<%= Redmine::Utils::relative_url_root %>/projects/<%= @project.id %>/taskboard/save';
   var project_archive_url = '<%= Redmine::Utils::relative_url_root %>/projects/<%= @project.id %>/taskboard/archive-issues';
   var issue_edit_url = '<%= Redmine::Utils::relative_url_root %>/issues/bulk_edit?';
