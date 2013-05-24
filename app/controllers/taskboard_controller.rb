@@ -11,6 +11,65 @@ class TaskboardController < ApplicationController
     IssueStatus.select([:id, :name]).each do |status|
       @status_names[status.id] = status.name
     end
+
+    # リードタイムを求める
+    resolved_id = 3   #解決(3)
+    accepted_id = 23  #受付(23)
+    inprogress_id = 2 #進行中(2)
+    new_id = 1        #新規(1)
+    journals = Journal.select("journals.journalized_id, journals.created_on") \
+       .joins('LEFT OUTER JOIN issues ON journals.journalized_id = issues.id') \
+       .joins('LEFT OUTER JOIN journal_details ON journal_details.journal_id = journals.id') \
+       .where("issues.project_id = ? AND journal_details.prop_key = 'status_id' AND journal_details.value = ?", \
+              @project.id, resolved_id)
+    lead_times = Hash.new
+    journals.each do |journal|
+      # 受付
+       accepted_date = Journal.find(:first,
+        :select => :created_on,
+        :joins => 'INNER JOIN journal_details ON journal_details.journal_id = journals.id',
+        :conditions => ["journals.journalized_id = ? AND journal_details.prop_key = 'status_id' AND journal_details.value IN (?, ?)",
+                        journal.journalized_id, accepted_id, new_id],
+        :order => "created_on desc")
+      if accepted_date != nil then
+        lead_times[journal.journalized_id] = Time.at(journal.created_on) - Time.at(accepted_date.created_on)
+        logger.debug "id:#{journal.journalized_id}, resolved:#{Time.at(journal.created_on)}, accepted:#{Time.at(accepted_date.created_on)}"
+      end
+    end
+    # リードタイムの平均を求める
+    @lead_time_days1 = ""
+    @lead_time_hours1 = ""
+    @lead_time_mins1 = ""
+    if lead_times.size > 0 then
+      lead_time = lead_times.values.inject(0.0){|r,i| r+=i }/lead_times.values.size
+      @lead_time_days1 = lead_time.divmod(24*60*60)
+      @lead_time_hours1 = @lead_time_days1[1].divmod(60*60)
+      @lead_time_mins1 = @lead_time_hours1[1].divmod(60)
+    end
+    lead_times.clear
+    journals.each do |journal|
+      # 進行中
+      inprogress_date = Journal.find(:first,
+        :select => :created_on,
+        :joins => 'INNER JOIN journal_details ON journal_details.journal_id = journals.id',
+        :conditions => ["journals.journalized_id = ? AND journal_details.prop_key = 'status_id' AND journal_details.value IN (?, ?, ?)",
+                        journal.journalized_id, inprogress_id, accepted_id, new_id],
+        :order => "created_on desc")
+      if inprogress_date != nil then
+        lead_times[journal.journalized_id] = Time.at(journal.created_on) - Time.at(inprogress_date.created_on)
+        logger.debug "id:#{journal.journalized_id}, resolved:#{Time.at(journal.created_on)}, inprogress:#{Time.at(inprogress_date.created_on)}"
+      end
+    end
+    @lead_time_days2 = ""
+    @lead_time_hours2 = ""
+    @lead_time_mins2 = ""
+    if lead_times.size > 0 then
+      lead_time = lead_times.values.inject(0.0){|r,i| r+=i }/lead_times.values.size
+      @lead_time_days2 = lead_time.divmod(24*60*60)
+      @lead_time_hours2 = @lead_time_days2[1].divmod(60*60)
+      @lead_time_mins2 = @lead_time_hours2[1].divmod(60)
+    end
+
   end
 
   def save
@@ -73,6 +132,7 @@ class TaskboardController < ApplicationController
       column_id = column_id.to_i
       unless column_id == 0
         @columns = TaskBoardColumn.find(column_id)
+        #@column.issue_statuses << IssueStatus.find(status_id)
         @columns.issue_statuses << IssueStatus.find(status_id)
       end
     end

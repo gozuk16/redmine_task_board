@@ -6,7 +6,9 @@
 </div>
 
 <div class="taskboard-leadtime">
-  ここにリードタイム書く
+  リードタイム：
+    受付→解決[<%= "#{@lead_time_days1[0].to_i}日 #{@lead_time_hours1[0].to_i}:#{@lead_time_mins1[0].to_i}:#{@lead_time_mins1[1].to_i}" %>]、
+    進行中→解決[<%= "#{@lead_time_days2[0].to_i}日 #{@lead_time_hours2[0].to_i}:#{@lead_time_mins2[0].to_i}:#{@lead_time_mins2[1].to_i}" %>]
 </div>
 <hr />
 
@@ -14,7 +16,11 @@
   <% @columns.each do|column| %>
     <div class="taskboard-pane">
       <% issues = column.issues %>
-      <h2><%= column.title %> (<%= column.issues_count %><% if column.max_issues > 0 %>/<%= column.max_issues %><% end %>)</h2>
+      <% if column.max_issues > 0 and column.issues_count > column.max_issues %>
+        <h2 style="color: red"><%= column.title %> (<%= column.issues_count %><% if column.max_issues > 0 %>/<%= column.max_issues %><% end %>)</h2>
+      <% else %>
+        <h2><%= column.title %> (<%= column.issues_count %><% if column.max_issues > 0 %>/<%= column.max_issues %><% end %>)</h2>
+      <% end %>
       <% issues.each do |status_id, issues| %>
         <% unless column.issues.size == 1 %>
           <h3 class="status"><%= @status_names[status_id] %></h3>
