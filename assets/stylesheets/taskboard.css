@@ -5,8 +5,8 @@
 
 .taskboard-pane {
   float: left;
-  width: 250px;
-  margin: 0 4px;
+  width: 241px;
+  margin: 0 0px;
 }
 
 .taskboard-pane h2, .taskboard-pane h3 {
@@ -17,6 +17,8 @@
   color: #666;
   font-size: 14px;
   border-bottom: solid 1px #666;
+  padding-left: 6px;
+  margin-bottom: 4px;
 }
 
 .taskboard-pane h2 {
@@ -26,10 +28,10 @@
 }
 
 .taskboard-pane ul {
-  border: solid 3px #eee;
+  border: solid 1px #eee;
   list-style-type: none;
   margin: 0 0 10px 0;
-  padding: 6px 6px 0 6px;
+  padding: 2px 2px 0 2px;
   min-height: 50px;
 }
 
@@ -40,7 +42,7 @@
 
 .taskboard-pane ul li.card {
   list-style-type: none;
-  margin: 0 0 6px 0;
+  margin: 0 0 2px 0;
   padding: 0;
 }
 
@@ -70,6 +72,7 @@
 
 .taskboard-pane ul li.card div.issue {
   padding: 3px;
+  margin-bottom: 0;
 }
 
 .taskboard-pane ul li.card div.issue:hover {
