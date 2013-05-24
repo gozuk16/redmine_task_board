@@ -17,15 +17,16 @@ class TaskboardController < ApplicationController
     accepted_id = 23  #受付(23)
     inprogress_id = 2 #進行中(2)
     new_id = 1        #新規(1)
+    finished_id = 5   #完了(5)
     journals = Journal.select("journals.journalized_id, journals.created_on") \
-       .joins('LEFT OUTER JOIN issues ON journals.journalized_id = issues.id') \
-       .joins('LEFT OUTER JOIN journal_details ON journal_details.journal_id = journals.id') \
-       .where("issues.project_id = ? AND journal_details.prop_key = 'status_id' AND journal_details.value = ?", \
-              @project.id, resolved_id)
+      .joins('INNER JOIN issues ON journals.journalized_id = issues.id') \
+      .joins('INNER JOIN journal_details ON journal_details.journal_id = journals.id') \
+      .where("issues.project_id = ? AND issues.status_id IN (?, ?) AND journal_details.prop_key = 'status_id' AND journal_details.value = ?", \
+              @project.id, resolved_id, finished_id, resolved_id)
     lead_times = Hash.new
     journals.each do |journal|
       # 受付
-       accepted_date = Journal.find(:first,
+      accepted_date = Journal.find(:first,
         :select => :created_on,
         :joins => 'INNER JOIN journal_details ON journal_details.journal_id = journals.id',
         :conditions => ["journals.journalized_id = ? AND journal_details.prop_key = 'status_id' AND journal_details.value IN (?, ?)",
