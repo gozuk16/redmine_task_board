@@ -87,10 +87,19 @@
 
 .taskboard-pane ul li.card div.issue div.issue-heading {
   overflow: auto;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
+}
+
+.taskboard-pane ul li.card div.issue div.issue-footing {
+  overflow: auto;
+  margin-top: 2px;
 }
 
 .taskboard-pane ul li.card div.issue div.issue-heading p.issue-number {
+  float: left;
+}
+
+.taskboard-pane ul li.card div.issue div.issue-footing p.issue-assigned {
   float: left;
 }
 
@@ -121,9 +130,24 @@
   padding: 3px;
 }
 
+.issue-category {
+  float: left;
+  padding: 2px 0 0 5px;
+  font-size: 9px;
+  margin: 0;
+}
+
 .issue-priority {
   float: right;
-  padding: 2px;
+  padding: 2px 0 0 0;
+  font-size: 9px;
+  margin: 0;
+}
+
+
+.issue-due_date {
+  float: right;
+  padding: 0 0 2px 2px;
   font-size: 9px;
   margin: 0;
 }
