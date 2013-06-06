@@ -27,7 +27,7 @@
         <% end %>
         <ul data-status-id="<%= status_id %>" data-max-issues="<%= column.max_issues %>" id="column_<%= status_id %>"<% if issues.empty? %> class="empty"<% end %>>
           <% issues.each do|issue| %>
-            <li class="card priority-<%= issue.priority.id.to_s %> <%= issue.tracker.name.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '') %>" id="issue_<%= issue.id %>" data-issue-id="<%= issue.id %>" data-weight="<%= issue.weight %>" data-status-id="<%= issue.status_id %>">
+            <li class="card effect priority-<%= issue.priority.id.to_s %> <%= issue.tracker.name.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '') %>" id="issue_<%= issue.id %>" data-issue-id="<%= issue.id %>" data-weight="<%= issue.weight %>" data-status-id="<%= issue.status_id %>">
               <% if defined? issue.assigned_to.name %>
                 <% if CustomValue.find_by_customized_type_and_customized_id("Principal", issue.assigned_to.id) != nil %>
                   <% user_color = CustomValue.find_by_customized_type_and_customized_id("Principal", issue.assigned_to.id).value %>
