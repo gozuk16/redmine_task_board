@@ -5,8 +5,6 @@ class TaskBoardColumn < ActiveRecord::Base
   validates_presence_of :title, :project
   validates_length_of :title, :maximum => 255
 
-#  @@issue_count
-
   def self.empty_status(status_id)
     columns = TaskBoardColumn \
       .select(:id) \
@@ -24,7 +22,7 @@ class TaskBoardColumn < ActiveRecord::Base
   		issues = Issue.select("issues.*, tbi.is_archived, tbi.#{order_column} as weight, tbi.issue_id") \
   			.joins('LEFT OUTER JOIN task_board_issues AS tbi ON tbi.issue_id = issues.id') \
   			.where("project_id = ? AND status_id = ? AND (is_archived IS NULL OR is_archived = 0)", self.project_id, status.id) \
-  			.order("weight ASC, created_on ASC")
+  			.order("weight ASC, assigned_to_id ASC, created_on ASC")
       @@issue_count += issues.count
   		issues.each do |issue|
         # Create a TaskBoardIssue (i.e. a Card) if one doesn't exist already.
