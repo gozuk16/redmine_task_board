@@ -52,8 +52,16 @@
                 .issue-footing
                   - if defined? issue.assigned_to.name
                     .issue-assigned.meta= link_to issue.assigned_to.name, :controller => :users, :action => :show, :id => issue.assigned_to.id
-                  - if defined? issue.due_date
-                    %p.issue-due_date= issue.due_date
+                  - if defined? issue.fixed_version.name
+                    .issue-version= link_to issue.fixed_version.name, :controller => :versions, :action => :show, :id => issue.fixed_version.id
+                  - if issue.due_date != nil
+                    .issue-due_date
+                      - if today == issue.due_date
+                        .issue-due_date-today= issue.due_date
+                      - elsif (issue.due_date - today).to_i < 0
+                        .issue-due_date-over= issue.due_date
+                      - else
+                        = issue.due_date
 
 :javascript
   //var project_save_url = '/projects/#{@project.id}/taskboard/save';

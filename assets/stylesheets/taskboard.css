@@ -123,13 +123,13 @@
   float: left;
 }
 
-.taskboard-pane ul li.card div.issue div.issue-footing p.issue-assigned {
-  float: left;
-}
+//.taskboard-pane ul li.card div.issue div.issue-footing p.issue-assigned {
+//  float: left;
+//}
 
 .taskboard-pane ul li.card div.issue h3 {
   font-size: 14px;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .taskboard-pane ul li.card div.issue h3 a {
@@ -168,12 +168,33 @@
   margin: 0;
 }
 
+.issue-assigned {
+  float: left;
+  padding: 0;
+  font-size: 9px;
+  margin: 0;
+}
+
+.issue-version {
+  float: left;
+  padding: 0 0 0 5px;
+  font-size: 9px;
+  margin: 0;
+}
 
 .issue-due_date {
   float: right;
   padding: 0 0 2px 2px;
   font-size: 9px;
   margin: 0;
+}
+
+.issue-due_date-today {
+  color: blue;
+}
+
+.issue-due_date-over {
+  color: red;
 }
 
 #prioritized-wrapper {
