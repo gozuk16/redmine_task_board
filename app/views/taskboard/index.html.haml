@@ -1,0 +1,75 @@
+= javascript_include_tag('task_board', :plugin => 'redmine_task_board')
+
+#taskboard-buttons
+  %input#edit-issues{:type => "button", :value => (translate :task_board_issue_bulk_edit)}/
+  %input#archive-issues{:type => "button", :value => (translate :task_board_issue_bulk_archive)}/
+
+.taskboard-leadtime
+  リードタイム：
+  受付→解決[#{"#{@lead_time_days1[0].to_i}日 #{@lead_time_hours1[0].to_i}:#{@lead_time_mins1[0].to_i}:#{@lead_time_mins1[1].to_i}"}]、
+  進行中→解決[#{"#{@lead_time_days2[0].to_i}日 #{@lead_time_hours2[0].to_i}:#{@lead_time_mins2[0].to_i}:#{@lead_time_mins2[1].to_i}"}]
+
+%hr/
+
+- today =  Date.today
+#sortable-root.taskboard-wrapper
+  - @columns.each do|column|
+    .taskboard-pane
+      - issues = column.issues
+      - if column.max_issues > 0
+        - post_num = "\/#{column.max_issues})"
+      - else
+        - post_num = ")"
+      - if column.max_issues > 0 and column.issues_count > column.max_issues
+        - title_color = "red"
+      - else
+        - title_color = "black"
+      %h2{:style => "color: #{title_color}"}
+        = "#{column.title} (#{column.issues_count}#{post_num}"
+      - issues.each do |status_id, issues|
+        - unless column.issues.size == 1
+          %h3.status= @status_names[status_id]
+        - if issues.empty?
+          - is_empty = "empty"
+        %ul(data-status-id="#{status_id}" data-max-issues="#{column.max_issues}" id="column_#{status_id}" class="#{is_empty}")
+          - issues.each do|issue|
+            %li{:class => "card effect priority-#{issue.priority.id.to_s} #{issue.tracker.name.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')}", "data-issue-id" => issue.id, "data-status-id" => issue.status_id, "data-weight" => issue.weight, :id => "issue_#{issue.id}"}
+              - if defined? issue.assigned_to.name
+                - if CustomValue.find_by_customized_type_and_customized_id("Principal", issue.assigned_to.id) != nil
+                  - user_color = CustomValue.find_by_customized_type_and_customized_id("Principal", issue.assigned_to.id).value
+                  - if user_color == nil
+                    - user_color = ""
+              .issue{:style => "background-color: #{user_color}"}
+                .issue-heading
+                  %p.issue-number.meta
+                    %input{:name => "ids[]", :type => "checkbox", :value => issue.id.to_s}
+                      = link_to "#{issue.tracker} ##{issue.id.to_s}", :controller => :issues, :action => :show, :id => issue.id
+                  .issue-category
+                    = issue.category
+                  %p.issue-priority
+                    = issue.priority.name
+                %h3= link_to issue.subject, :controller => :issues, :action => :show, :id => issue.id
+                .issue-footing
+                  - if defined? issue.assigned_to.name
+                    .issue-assigned.meta= link_to issue.assigned_to.name, :controller => :users, :action => :show, :id => issue.assigned_to.id
+                  - if defined? issue.due_date
+                    %p.issue-due_date= issue.due_date
+
+:javascript
+  //var project_save_url = '/projects/#{@project.id}/taskboard/save';
+  //var project_archive_url = '/projects/#{@project.id}/taskboard/archive-issues';
+  var project_save_url = '#{Redmine::Utils::relative_url_root}/projects/#{@project.id}/taskboard/save';
+  var project_archive_url = '#{Redmine::Utils::relative_url_root}/projects/#{@project.id}/taskboard/archive-issues';
+  var issue_edit_url = '#{Redmine::Utils::relative_url_root}/issues/bulk_edit?';
+  var sections = [];
+  $('#sortable-root .taskboard-pane ul').each(function() {
+    sections.push($(this).attr('id'));
+  });
+  for (var i in sections) {
+    new TaskBoardPane(sections[i], {connectWith: '#sortable-root .taskboard-pane ul', constraint: false, scroll: true, dropOnEmpty: true, items: '> .card'});
+  }
+  TaskBoardUtils.checkboxListener();
+  // Sortable.create('sortable-root', {tree: true, dropOnEmpty: true, constraint: false, overlap: 'vertical'});
+
+- content_for :header_tags do
+  = stylesheet_link_tag 'taskboard', :plugin => 'redmine_task_board'
